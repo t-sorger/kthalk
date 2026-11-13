@@ -127,7 +127,7 @@
   for k in bg.keys() { assert(k in _allowed, message: "kthalk: unknown bg key '" + k + "'; use " + _allowed.keys().join(", ")) }
   let given = bg
   let bg = _allowed.keys().map(k => (k, _allowed.at(k).first())).to-dict() + given
-  if "end" not in given { bg.end = if type(bg.title) == color { bg.title } else { kth.blue } }
+  if given.at("end", default: auto) == auto { bg.end = if type(bg.title) == color { bg.title } else { kth.blue } }
   let footer = if footer == auto { title } else { footer }
   let date = if type(date) == datetime { date.display() } else { date }
 
@@ -242,19 +242,22 @@
 })
 
 // Layouts "Two parts" and "Two parts, subheader" (pass headings: ([..], [..])).
-#let two-parts(title: none, headings: none, notes: none, first, second) = touying-slide-wrapper(self => _slide(
-  self, notes: notes,
-  background: { _logo(); _title(title) },
-  margin: _margin(1.667cm, 4.99cm, 30.523cm, 12.59cm, inset: (x: 0cm, y: 0cm)),
-  composer: (..bodies) => grid(
-    columns: (14.76cm, 14.76cm), column-gutter: 1fr, inset: (x: 0.254cm, y: 0.127cm),
-    rows: if headings == none { auto } else { (0.89cm, auto) },
-    row-gutter: if headings == none { 0cm } else { 0.17cm },
-    ..if headings != none { headings.map(h => align(bottom, text(18pt, weight: "bold", fill: kth.blue, h))) },
-    ..bodies.pos(),
-  ),
-  first, second,
-))
+#let two-parts(title: none, headings: none, notes: none, first, second) = touying-slide-wrapper(self => {
+  assert(headings == none or headings.len() == 2, message: "two-parts takes two headings, one per column")
+  _slide(
+    self, notes: notes,
+    background: { _logo(); _title(title) },
+    margin: _margin(1.667cm, 4.99cm, 30.523cm, 12.59cm, inset: (x: 0cm, y: 0cm)),
+    composer: (..bodies) => grid(
+      columns: (14.76cm, 14.76cm), column-gutter: 1fr, inset: (x: 0.254cm, y: 0.127cm),
+      rows: if headings == none { auto } else { (0.89cm, auto) },
+      row-gutter: if headings == none { 0cm } else { 0.17cm },
+      ..if headings != none { headings.map(h => align(bottom, text(18pt, weight: "bold", fill: kth.blue, h))) },
+      ..bodies.pos(),
+    ),
+    first, second,
+  )
+})
 
 // Layout "Text and image": photo fills the right half.
 #let text-image(title: none, notes: none, photo, body) = touying-slide-wrapper(self => _slide(
