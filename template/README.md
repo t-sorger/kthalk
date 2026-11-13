@@ -1,6 +1,6 @@
 # My talk
 
-Slides made with [kthalk](https://typst.app/universe/package/kthalk).
+Slides made with [kthalk](https://github.com/t-sorger/kthalk).
 Write them in `main.typ`; the comments there list all options.
 Run all commands in this folder.
 

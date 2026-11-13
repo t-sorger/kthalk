@@ -5,30 +5,51 @@ It has the same layouts, colours, font, logo and line art, with positions and si
 
 ![All 44 layouts](docs/overview.png)
 
-## Setup
+## Install
 
-On macOS, install Typst and the presenter app [pdfpc](https://pdfpc.github.io) with [Homebrew](https://brew.sh):
+kthalk is not on Typst Universe yet, so you install it from this repository.
+The commands are for macOS with [Homebrew](https://brew.sh).
+
+1. Install Typst and the presenter app [pdfpc](https://pdfpc.github.io):
+
+   ```sh
+   brew install typst pdfpc
+   ```
+
+2. Clone kthalk into Typst's local package folder, where Typst finds `@preview/kthalk:0.1.0`:
+
+   ```sh
+   git clone https://github.com/t-sorger/kthalk.git ~/Library/Application\ Support/typst/packages/preview/kthalk/0.1.0
+   ```
+
+   On Linux, the folder is `~/.local/share/typst/packages/preview/kthalk/0.1.0`, and on Windows it is `%APPDATA%\typst\packages\preview\kthalk\0.1.0`.
+
+3. Install the Figtree font from the clone:
+
+   ```sh
+   cp ~/Library/Application\ Support/typst/packages/preview/kthalk/0.1.0/fonts/*.ttf ~/Library/Fonts/
+   ```
+
+To update kthalk later, pull the latest version:
 
 ```sh
-brew install typst pdfpc
+git -C ~/Library/Application\ Support/typst/packages/preview/kthalk/0.1.0 pull
 ```
 
-Install the static Figtree font files (the Font section below explains why not the Homebrew font package):
-
-```sh
-cd ~/Library/Fonts && for s in Regular Bold Italic BoldItalic; do curl -fLO "https://raw.githubusercontent.com/erikdkennedy/figtree/master/fonts/ttf/Figtree-$s.ttf"; done; cd -
-```
+The Typst web app can only use kthalk once it is on Typst Universe.
 
 ## Usage
 
-Start a new presentation from the template:
+Start a new presentation:
 
 ```sh
-typst init @preview/kthalk:0.1.0
+typst init @preview/kthalk:0.1.0 my-talk
 ```
 
-In the web app, choose *Start from template* and search for `kthalk`.
-Or import the package into an existing file:
+This creates the folder `my-talk` with `main.typ`, where you write the slides, and a `README.md` with the commands to preview, present and share them.
+The comments in `main.typ` list all options.
+
+To use kthalk in an existing file, import it and apply it at the top:
 
 ```typ
 #import "@preview/kthalk:0.1.0": *
@@ -56,14 +77,9 @@ Or import the package into an existing file:
 
 ## Font
 
-The template uses [Figtree](https://fonts.google.com/specimen/Figtree) (SIL Open Font License).
-Typst packages cannot ship fonts, so install it yourself.
-Use the **static** font files (`Figtree-Regular.ttf`, `Figtree-Bold.ttf`, …), which you can download from the [`fonts` folder of this package's repository](https://github.com/t-sorger/kthalk/tree/main/fonts) or from the [Figtree repository](https://github.com/erikdkennedy/figtree/tree/master/fonts/ttf).
-Typst only uses the default weight of a variable font (`Figtree[wght].ttf`), which for Figtree is Light, so text would come out too thin and without bold.
-
-- **Command line:** install the static files on your system, or put them in a folder of your project and compile with `typst compile --font-path fonts main.typ`.
-- **Web app:** upload the static `.ttf` files into your project.
-
+The template uses [Figtree](https://fonts.google.com/specimen/Figtree) (SIL Open Font License), which the install step copies from the repository's [`fonts`](fonts) folder.
+Use these static files rather than the variable font (`Figtree[wght].ttf`) from Google Fonts or Homebrew: Typst only uses the default weight of a variable font, which for Figtree is Light, so text would come out too thin and without bold.
+To compile without installing the font, add `--font-path` with the path to the `fonts` folder.
 Without Figtree, Typst falls back to its default font and shows a warning.
 
 ## Configuration
