@@ -17,11 +17,12 @@
 
 #chapter-slide(title: [Introduction], subtitle: [Optional subheading])
 
-#slide(title: [Headline and content])[
+#slide(title: [Headline and content], notes: [Speaker notes go here.])[
   - First level
     - Second level
       - Third level
-  - Back to first level
+  #pause
+  - Appears on the next click
 ]
 
 #two-parts(title: [Two parts], headings: ([Before], [After]))[

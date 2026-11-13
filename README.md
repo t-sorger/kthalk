@@ -67,6 +67,7 @@ The slides pick them up automatically.
 | `bg`            | `(:)`   | Default backgrounds per slide type: a dictionary with any of `title`, `chapter`, `slide`, `comparison` and `end`. |
 | `lines`         | `auto`  | Default line art for `slide` (see below).                                                                         |
 | `lang`          | `"en"`  | Text language.                                                                                                    |
+| `..args`        |         | Touying settings, e.g. `config-common(handout: true)` (see below).                                                |
 
 For example, a navy presentation:
 
@@ -106,6 +107,7 @@ Pass a colour to override it for one slide.
 - `kth-campus` is the KTH campus photo from the official "Title, image" layout.
   `#title-slide(bg: kth-campus)` gives that slide.
   It works anywhere an image is expected.
+- Every slide function also takes `notes: [..]` for speaker notes (see below).
 
 Lists follow the official template: bullets in KTH blue and text sizes of 20, 18, 16, 14 and 12 pt for nested levels.
 
@@ -113,9 +115,43 @@ Lists follow the official template: bullets in KTH blue and text sizes of 20, 18
 
 The `kth` dictionary contains the KTH colour palette: `kth.blue`, `kth.navy`, `kth.sky`, `kth.light-blue`, `kth.sand` and `kth.digital-blue`, plus `green`, `turquoise`, `brick`, `yellow` and `grey`, each also with a `dark-` and a `light-` variant (e.g. `kth.dark-brick`, `kth.light-green`).
 
-## Not included
+## Animations and speaker notes
 
-- Step-by-step reveals (`#pause`) and speaker notes.
+Animations and speaker notes come from [Touying](https://typst.app/universe/package/touying), and kthalk re-exports the parts you need.
+
+```typ
+#slide(title: [Results], notes: [Mention the sample size.])[
+  - Shown first
+  #pause
+  - Appears on the next click
+  #pause
+  - And then this
+]
+```
+
+- `#pause` splits a slide into steps, which all keep the same slide number.
+- `#meanwhile` makes the following content start again at the first step.
+- `#uncover("2-")[..]`, `#only(3)[..]`, `#alternatives[..][..]` and `#item-by-item[..]` show content on chosen steps.
+- In two-column slides, the steps run through the left column first and then through the right one.
+- `notes: [..]` shows the note on every step of the slide.
+- Inside a slide body, `#speaker-note[..]` works too and shows the note from the step where it is written.
+
+To present with notes, export them for [pdfpc](https://pdfpc.github.io) and open the PDF in it:
+
+```sh
+typst compile main.typ
+typst eval 'query(<pdfpc-file>).first().value' --in main.typ > main.pdfpc
+pdfpc main.pdf
+```
+
+Two more settings go in the show rule:
+
+- `config-common(show-notes-on-second-screen: right)` puts the notes next to each slide on a double-width page, for presenter apps that split pages, e.g. `pdfpc --notes=right main.pdf`.
+- `config-common(handout: true)` turns off the animations and gives one page per slide, e.g. for a PDF to share.
+
+```typ
+#show: kthalk.with(title: [My talk], config-common(handout: true))
+```
 
 ## License
 

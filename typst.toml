@@ -8,7 +8,7 @@ description = "Unofficial KTH Royal Institute of Technology slides."
 repository = "https://github.com/t-sorger/kthalk"
 keywords = ["KTH", "KTH Royal Institute of Technology", "Kungliga Tekniska högskolan", "slides", "presentation"]
 categories = ["presentation"]
-compiler = "0.14.0"
+compiler = "0.15.0"
 exclude = ["/docs"]
 
 [template]
