@@ -39,7 +39,8 @@
 #let _W = 33.867cm
 #let _H = 19.05cm
 #let _title-inset = (x: 0.254cm, top: 0.3cm, bottom: 0.127cm)
-#let _marker(fill) = box(width: 0.635cm, align(left, text(font: ("Arial", "Figtree"), fill: fill, "•")))
+// PowerPoint's bullet is Arial's "•"; drawn as a circle of the same size and position, so no Arial font is needed.
+#let _marker(fill) = box(width: 0.635cm, align(left, h(0.0532em) + box(baseline: -0.2266em, circle(radius: 0.1238em, fill: fill))))
 
 // Background for a slide of `kind`: the slide's own `bg`, else the deck setting.
 #let _bg(self, kind, bg) = {
