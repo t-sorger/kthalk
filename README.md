@@ -5,6 +5,20 @@ It has the same layouts, colours, font, logo and line art, with positions and si
 
 ![All 44 layouts](docs/overview.png)
 
+## Setup
+
+On macOS, install Typst and the presenter app [pdfpc](https://pdfpc.github.io) with [Homebrew](https://brew.sh):
+
+```sh
+brew install typst pdfpc
+```
+
+Install the static Figtree font files (the Font section below explains why not the Homebrew font package):
+
+```sh
+cd ~/Library/Fonts && for s in Regular Bold Italic BoldItalic; do curl -fLO "https://raw.githubusercontent.com/erikdkennedy/figtree/master/fonts/ttf/Figtree-$s.ttf"; done; cd -
+```
+
 ## Usage
 
 Start a new presentation from the template:
