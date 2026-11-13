@@ -153,6 +153,12 @@ Two more settings go in the show rule:
 #show: kthalk.with(title: [My talk], config-common(handout: true))
 ```
 
+For a one-off handout without editing the file, compile with `--input handout=true`:
+
+```sh
+typst compile --input handout=true main.typ handout.pdf
+```
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE-MIT), except for the contents of the `template/` directory (the files you edit in your own presentation), which are licensed under [MIT No Attribution](LICENSE-MIT-0).

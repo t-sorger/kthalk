@@ -134,7 +134,8 @@
   set document(title: title) if title != none
   show: touying-slides.with(
     config-page(width: _W, height: _H, margin: 0pt, header: none, footer: none),
-    config-common(show-strong-with-alert: false),
+    // `typst compile --input handout=true` makes a handout without changing the file.
+    config-common(show-strong-with-alert: false, handout: sys.inputs.at("handout", default: "false") == "true"),
     config-methods(init: (self: none, body) => {
       // PowerPoint's 90 % line spacing: baseline pitch = 0.9 × (ascender + descender) of Figtree.
       set text(font: "Figtree", size: 20pt, lang: lang, hyphenate: false, top-edge: 0.855em, bottom-edge: -0.225em)
