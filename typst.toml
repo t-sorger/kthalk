@@ -1,0 +1,17 @@
+[package]
+name = "kthalk"
+version = "0.1.0"
+entrypoint = "src/lib.typ"
+authors = ["Tom Sorger <@t-sorger>"]
+license = "MIT AND MIT-0"
+description = "Unofficial KTH Royal Institute of Technology slides."
+repository = "https://github.com/t-sorger/kthalk"
+keywords = ["KTH", "KTH Royal Institute of Technology", "Kungliga Tekniska högskolan", "slides", "presentation"]
+categories = ["presentation"]
+compiler = "0.14.0"
+exclude = ["/docs"]
+
+[template]
+path = "template"
+entrypoint = "main.typ"
+thumbnail = "thumbnail.png"
