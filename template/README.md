@@ -13,6 +13,16 @@ typst compile main.typ && open main.pdf
 typst watch main.typ
 ```
 
+## Cite
+
+`@key` or `#cite(<a>, <b>)` cites entries of `refs.bib`; each slide lists the entries it cites at the bottom.
+To use another `.bib` file, e.g. the one of your paper, change `bib: path("refs.bib")` in `main.typ`, e.g. to `bib: path("../paper/refs.bib")`.
+If the file is outside this folder, add `--root ..` to every `typst` command below, e.g.:
+
+```sh
+typst watch --root .. main.typ
+```
+
 ## Present
 
 Create the PDF and the speaker notes, then start the presentation:

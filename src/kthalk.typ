@@ -78,6 +78,35 @@
   img
 })
 
+// Citations: @key or #cite(<a>, <b>) shows [1] or [1, 2]; the slide lists the cited entries above the footer.
+#let _cite-numbers = state("kthalk-cite-numbers", "deck")
+
+// Cited keys in order of first use: in the whole deck, or (deck: false) on this page only.
+#let _cite-keys(deck) = query(std.cite).filter(c => c.form != "full" and (deck or c.location().page() == here().page())).map(c => c.key).dedup()
+
+// Number of `key`: counted through the deck, or from 1 on every slide with cite-numbers: "slide".
+#let _cite-number(key) = _cite-keys(_cite-numbers.get() == "deck").position(k => k == key) + 1
+
+#let cite(..keys, supplement: none) = {
+  for k in keys.pos() { std.cite(k, form: none) } // registers the keys; Typst checks they exist
+  context [\[#keys.pos().map(k => str(_cite-number(k))).join(", ")#if supplement != none [, #supplement]\]]
+}
+
+// Entries cited on this page, bottom-aligned above the footer and as wide as the slide's text box (`w`).
+#let _refs(self, w) = context {
+  // Typst needs the bibliography in the document; on the first page, as content outside a slide gets its own page.
+  let bib = self.store.kthalk.bib
+  if bib != none and here().page() == 1 { place(hide(bibliography(bib, title: none, style: "ieee"))) }
+  let rows = _cite-keys(false).map(k => (_cite-number(k), k)).sorted(key: r => r.first())
+  if rows.len() > 0 {
+    place(bottom + left, dx: 1.667cm + 0.254cm, dy: -1.35cm, block(width: w - 0.508cm, {
+      set text(10pt)
+      let entry(k) = { show regex("^\[\d+\]\s*"): none; std.cite(k, form: "full") } // without the style's own number
+      grid(columns: 2, align: top, column-gutter: 0.3em, row-gutter: 4pt, ..rows.map(((n, k)) => ([\[#n\]], entry(k))).flatten())
+    }))
+  }
+}
+
 #let _footer(self, fill) = {
   let c = self.store.kthalk
   set text(7pt, fill: fill)
@@ -89,10 +118,10 @@
 
 // One Touying slide: a static `background` (logo, title, line art, photos) and the `bodies`,
 // which Touying animates, laid out inside `margin`.
-#let _slide(self, fill: white, footer: kth.sky, background: none, margin: 0pt, notes: none, composer: auto, ..bodies) = {
+#let _slide(self, fill: white, footer: kth.sky, background: none, margin: 0pt, notes: none, composer: auto, refs: 30.528cm, ..bodies) = {
   let self = utils.merge-dicts(self, config-page(
     fill: fill, margin: margin, background: background,
-    foreground: if footer != none { _footer(self, footer) },
+    foreground: { if footer != none { _footer(self, footer) }; _refs(self, refs) },
   ))
   let bodies = bodies.pos()
   if bodies.len() == 0 { bodies = ([],) }
@@ -123,8 +152,10 @@
 
 #let kthalk(
   title: none, subtitle: none, footer: auto, date: none, slide-numbers: false,
-  lang: "en", bg: (:), lines: auto, ..args, body,
+  lang: "en", bg: (:), lines: auto, bib: none, cite-numbers: "deck", ..args, body,
 ) = {
+  assert(type(bib) != str, message: "kthalk: write bib: path(" + repr(bib) + "), so the path is relative to your file and not to kthalk")
+  assert(cite-numbers in ("deck", "slide"), message: "kthalk: cite-numbers is \"deck\" or \"slide\"")
   for k in bg.keys() { assert(k in _allowed, message: "kthalk: unknown bg key '" + k + "'; use " + _allowed.keys().join(", ")) }
   let given = bg
   let bg = _allowed.keys().map(k => (k, _allowed.at(k).first())).to-dict() + given
@@ -155,9 +186,11 @@
       }
       show link: set text(fill: rgb("#3878C2"))
       show link: underline
+      show std.cite.where(form: "normal"): it => cite(it.key, supplement: it.supplement)
+      _cite-numbers.update(cite-numbers)
       body
     }),
-    config-store(kthalk: (title: title, subtitle: subtitle, footer: footer, date: date, numbers: slide-numbers, bg: bg, lines: lines)),
+    config-store(kthalk: (title: title, subtitle: subtitle, footer: footer, date: date, numbers: slide-numbers, bg: bg, lines: lines, bib: bib)),
     ..args,
   )
   body
@@ -228,7 +261,7 @@
   } else {
     _margin(1.667cm, 5.201cm, 30.528cm, 12.372cm)
   }
-  _slide(self, fill: bg, notes: notes, margin: margin, background: {
+  _slide(self, fill: bg, notes: notes, margin: margin, refs: if lines != none and not top { 24.46cm } else { 30.528cm }, background: {
     if lines != none {
       let v = if lines == kth.sand { "sand" } else if lines == white { "white" } else { "sky" }
       place(dx: 23.93cm, dy: 5.33cm, image("assets/lines-" + v + ".svg", width: 9.93cm))
@@ -262,7 +295,7 @@
 
 // Layout "Text and image": photo fills the right half.
 #let text-image(title: none, notes: none, photo, body) = touying-slide-wrapper(self => _slide(
-  self, notes: notes,
+  self, notes: notes, refs: 13.69cm,
   background: { place(dx: 16.93cm, _cover(16.94cm, _H, photo)); _logo(); _title(title, w: 13.69cm, h: 2.72cm) },
   margin: _margin(1.667cm, 6.34cm, 13.69cm, 11.24cm),
   body,
@@ -273,7 +306,7 @@
 #let comparison(title: none, heading: none, bg: auto, notes: none, first, second) = touying-slide-wrapper(self => {
   let bg = _bg(self, "comparison", bg)
   let dark = bg in (kth.blue, kth.navy)
-  _slide(self, fill: bg, notes: notes,
+  _slide(self, fill: bg, notes: notes, refs: 13.69cm,
     background: {
       place(rect(width: 16.93cm, height: _H, fill: white))
       _logo()

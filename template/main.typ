@@ -18,6 +18,9 @@
   // ),
 
   // lines: kth.sky, // line art on content slides: none, kth.sky, kth.sand or white; by default only light blue and sand slides have it
+
+  bib: path("refs.bib"), // BibTeX file for @key and #cite(..), e.g. your paper's: path("../paper/refs.bib") with typst compile --root ..
+  // cite-numbers: "slide", // "deck" (default): numbered through all slides; "slide": from [1] on every slide
   // config-common(handout: true), // no click steps, one page per slide (for sharing)
 )
 
@@ -45,6 +48,20 @@
       - Third level
   #pause
   - Appears on the next click
+]
+
+// @key cites one entry of refs.bib, #cite(<a>, <b>) several, like \cite{a,b} in LaTeX.
+// The slide lists the cited entries at the bottom.
+#slide(title: [Citations])[
+  - Transformers replaced recurrence with attention @vaswani2017
+  - Deep learning took over computer vision #cite(<he2016>, <lecun2015>)
+  - With a page: @lecun2015[p. 438]
+]
+
+#slide(title: [More citations])[
+  - An entry cited before keeps its number @he2016
+  - A new entry gets the next one @goodfellow2014
+  - With cite-numbers: "slide", every slide starts again at [1]
 ]
 
 // headings: one subheader per column; leave it out for two plain columns.

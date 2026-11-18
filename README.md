@@ -87,17 +87,19 @@ Without Figtree, Typst falls back to its default font and shows a warning.
 Settings for the whole presentation go in the `kthalk` show rule, once at the top.
 The slides pick them up automatically.
 
-| Parameter       | Default | Description                                                                                                       |
-| --------------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
-| `title`         | `none`  | Title on the title slide, footer text and PDF title.                                                              |
-| `subtitle`      | `none`  | Subtitle on the title slide.                                                                                      |
-| `footer`        | `auto`  | Footer centre: `auto` uses `title` and `none` hides it.                                                           |
-| `date`          | `none`  | Footer left: a `datetime` (shown as YYYY-MM-DD) or any content.                                                   |
-| `slide-numbers` | `false` | Slide number in the footer right.                                                                                 |
-| `bg`            | `(:)`   | Default backgrounds per slide type: a dictionary with any of `title`, `chapter`, `slide`, `comparison` and `end`. |
-| `lines`         | `auto`  | Default line art for `slide` (see below).                                                                         |
-| `lang`          | `"en"`  | Text language.                                                                                                    |
-| `..args`        |         | Touying settings, e.g. `config-common(handout: true)` (see below).                                                |
+| Parameter       | Default  | Description                                                                                                       |
+| --------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
+| `title`         | `none`   | Title on the title slide, footer text and PDF title.                                                              |
+| `subtitle`      | `none`   | Subtitle on the title slide.                                                                                      |
+| `footer`        | `auto`   | Footer centre: `auto` uses `title` and `none` hides it.                                                           |
+| `date`          | `none`   | Footer left: a `datetime` (shown as YYYY-MM-DD) or any content.                                                   |
+| `slide-numbers` | `false`  | Slide number in the footer right.                                                                                 |
+| `bg`            | `(:)`    | Default backgrounds per slide type: a dictionary with any of `title`, `chapter`, `slide`, `comparison` and `end`. |
+| `lines`         | `auto`   | Default line art for `slide` (see below).                                                                         |
+| `lang`          | `"en"`   | Text language.                                                                                                    |
+| `bib`           | `none`   | BibTeX file for citations, e.g. `path("refs.bib")` (see below).                                                   |
+| `cite-numbers`  | `"deck"` | Citation numbers: `"deck"` counts through all slides, `"slide"` starts at [1] on every slide.                     |
+| `..args`        | -------- | Touying settings, e.g. `config-common(handout: true)` (see below).                                                |
 
 For example, a navy presentation:
 
@@ -144,6 +146,34 @@ Lists follow the official template: bullets in KTH blue and text sizes of 20, 18
 ## Colours
 
 The `kth` dictionary contains the KTH colour palette: `kth.blue`, `kth.navy`, `kth.sky`, `kth.light-blue`, `kth.sand` and `kth.digital-blue`, plus `green`, `turquoise`, `brick`, `yellow` and `grey`, each also with a `dark-` and a `light-` variant (e.g. `kth.dark-brick`, `kth.light-green`).
+
+## Citations
+
+Point `bib` at a BibTeX file, e.g. the one of your LaTeX paper, and cite its entries on any slide:
+
+```typ
+#show: kthalk.with(title: [My talk], bib: path("refs.bib"))
+
+#slide(title: [Related work])[
+  - Attention @vaswani2017 // [1]
+  - Vision #cite(<he2016>, <lecun2015>) // [2, 3], like \cite{he2016,lecun2015}
+  - With a page @lecun2015[p. 438] // [3, p. 438]
+]
+```
+
+- The slide lists the entries it cites above the footer, in IEEE style, e.g. [1] A. Vaswani et al., “Attention Is All You Need,” in NeurIPS, 2017.
+- `cite-numbers: "deck"` (default) numbers the entries in the order they are first cited in the presentation, like in a paper.
+  `cite-numbers: "slide"` starts at [1] on every slide.
+- A slide lists its references on all its click steps, also before a `#pause` uncovers the citation.
+
+A new talk from `typst init` comes with `refs.bib`, which holds the entries of the example slides.
+Add your entries to it, or use another `.bib` file, e.g. the one of your LaTeX paper:
+
+1. In `main.typ`, change `bib: path("refs.bib")` to the path of your file, relative to `main.typ`, e.g. `bib: path("../paper/refs.bib")`.
+   Keep `path(..)` around it, so Typst looks for the file next to your `main.typ` and not inside kthalk.
+2. If the file is outside the talk folder, as in `../paper`, add `--root ..` to every `typst` command (`compile`, `watch` and `eval`), e.g. `typst watch --root .. main.typ`.
+   Typst only reads files inside its root folder, which is the folder of `main.typ` by default; `--root ..` makes it the folder above.
+   Without it, Typst stops with "path would escape the project root".
 
 ## Animations and speaker notes
 
