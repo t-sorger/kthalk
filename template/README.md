@@ -36,6 +36,14 @@ pdfpc main.pdf
 In pdfpc, the audience sees the slides and your screen shows the notes and the next slide.
 This needs a second screen (projector or monitor), set to "Use as Extended display" in System Settings → Displays, not mirrored.
 
+Keys for pointing at the slide while presenting:
+
+- `2`: laser pointer, a red dot that follows your mouse over the current slide in your view and shows on the audience screen.
+  Drag with the mouse to dim everything outside an area, and press `z` to zoom into it (`Escape` zooms out).
+- `5`: spotlight, which darkens everything except a circle around the mouse.
+- `+` / `-`: make the pointer or spotlight bigger or smaller.
+- `1`: back to normal, pointer off.
+
 If the slides and the notes are on the wrong screens, swap them:
 
 ```sh
